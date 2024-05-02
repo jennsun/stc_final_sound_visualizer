@@ -153,6 +153,25 @@ class Stream_Analyzer:
         #https://pypi.org/project/vamp/
 
         return
+    
+    def get_average_values(self, fft, fftx, frequency_ranges):
+        fft_values_at_frequencies_of_interest = []
+        last_upper_bound = 0  # Start from 0 Hz for the first range
+        for upper_bound in frequency_ranges:
+            # Finding indices of fftx within the current range
+            indices_in_range = np.where((fftx > last_upper_bound) & (fftx <= upper_bound))[0]
+            
+            # Calculating the average of fft values in this range
+            if len(indices_in_range) > 0:  # Ensure there are indices in this range
+                average_fft_value = np.mean(fft[indices_in_range])
+                fft_values_at_frequencies_of_interest.append(average_fft_value)
+            else:
+                fft_values_at_frequencies_of_interest.append(0)  # Append 0 if no indices found
+
+            # Update the lower bound of the next range
+            last_upper_bound = upper_bound
+
+        return fft_values_at_frequencies_of_interest
 
     def get_audio_features(self):
 
@@ -182,4 +201,8 @@ class Stream_Analyzer:
             if self.visualize and self.visualizer._is_running:
                 self.visualizer.update()
 
-        return self.fftx, self.fft, self.frequency_bin_centres, self.frequency_bin_energies
+            frequencies_of_interest = [50, 1300, 1950, 3250, 3900, 4550]
+            fft_values_at_frequencies_of_interest = self.get_average_values(self.fft, self.fftx, frequencies_of_interest)
+
+
+        return self.fftx, self.fft, self.frequency_bin_centres, self.frequency_bin_energies, fft_values_at_frequencies_of_interest

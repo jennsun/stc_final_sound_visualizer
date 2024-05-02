@@ -27,6 +27,21 @@ def convert_window_ratio(window_ratio):
         return float_ratio
     raise ValueError('window_ratio should be in the format: float/float')
 
+def map_frequencies(frequencies, old_min, old_max, new_min, new_max):
+    # Map each frequency value from the old range to the new range
+    mapped_frequencies = [
+        new_min + (new_max - new_min) * (freq - old_min) / (old_max - old_min)
+        for freq in frequencies
+    ]
+
+    # Convert mapped frequencies to integers that don't exceed 180
+    mapped_frequencies = [min(180, int(round(f))) for f in mapped_frequencies]
+
+    # Convert the list of integers to a comma-separated string and add a newline at the end
+    result_string = ','.join(map(str, mapped_frequencies)) + '\n'
+    # print("result_string is: ", result_string)
+    return result_string
+
 def run_FFT_analyzer():
     args = parse_args()
     window_ratio = convert_window_ratio(args.window_ratio)
@@ -44,17 +59,22 @@ def run_FFT_analyzer():
                     window_ratio = window_ratio  # Float ratio of the visualizer window. e.g. 24/9
                     )
 
-    fps = 60  #How often to update the FFT features + display
+    fps = 30  #How often to update the FFT features + display
     last_update = time.time()
     print("All ready, starting audio measurements now...")
     fft_samples = 0
     while True:
         if (time.time() - last_update) > (1./fps):
             last_update = time.time()
-            raw_fftx, raw_fft, binned_fftx, binned_fft = ear.get_audio_features()
+            raw_fftx, raw_fft, binned_fftx, binned_fft, values_at_frequencies_of_interest = ear.get_audio_features()
+            print("Values at this time are:", values_at_frequencies_of_interest)
             fft_samples += 1
             #if fft_samples % 20 == 0:
             #    print(f"Got fft_features #{fft_samples} of shape {raw_fft.shape}")
+
+            mapped_frequencies = map_frequencies(values_at_frequencies_of_interest, 0, 10, 0, 180)
+            print("Corresponding Angles are: ", mapped_frequencies)
+    
         elif args.sleep_between_frames:
             time.sleep(((1./fps)-(time.time()-last_update)) * 0.99)
 
