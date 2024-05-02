@@ -1,3 +1,8 @@
+# CURRENT WORKING VISUALIZER 5-1-23
+# pip uninstall pygame
+# pip install pygame --pre
+
+
 import argparse
 from src.stream_analyzer import Stream_Analyzer
 import time
