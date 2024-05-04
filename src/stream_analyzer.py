@@ -175,6 +175,32 @@ class Stream_Analyzer:
 
     def get_audio_features(self):
 
+        # 6
+        # fft_values_at_frequencies_of_interest = [
+        #     0, 0, 0, 0, 0, 0
+        # ]
+        # 22
+        fft_values_at_frequencies_of_interest = [
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+            0, 0, 0, 0, 0, 0, 0, 0, 0, 0 
+        ]
+        # 23
+        # fft_values_at_frequencies_of_interest = [
+        #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        # ]
+        # 24
+        # fft_values_at_frequencies_of_interest = [
+        #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+        # ]
+        # 26
+        # fft_values_at_frequencies_of_interest = [
+        #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        #     0, 0, 0, 0
+        # ]
+
         if self.stream_reader.new_data:  #Check if the stream_reader has new audio data we need to process
             if self.verbose:
                 start = time.time()
@@ -201,8 +227,29 @@ class Stream_Analyzer:
             if self.visualize and self.visualizer._is_running:
                 self.visualizer.update()
 
-            frequencies_of_interest = [50, 1300, 1950, 3250, 3900, 4550]
-            fft_values_at_frequencies_of_interest = self.get_average_values(self.fft, self.fftx, frequencies_of_interest)
+            # 6
+            # frequencies_of_interest = [50, 1300, 1950, 3250, 3900, 4550]
+            # 12
+            # frequencies_of_interest = [20, 25, 36, 47, 62, 91, 112, 173, 266, 330, 410, 509]
+            # 16 + 6 = 22
+            frequencies_of_interest = [25, 47, 62, 91, 112, 173, 266, 330, 410, 509, 631, 783, 972, 1206, 1497, 1857, 2304, 2859, 3547, 4401, 6776, 8408]
+            # # 23
+            # frequencies_of_interest = [10, 25, 31, 47, 62, 91, 112, 173, 266, 330, 410, 509, 631, 783, 972, 1206, 1497, 1857, 2304, 2859, 3547, 4401, 6776]
+            # 24
+            # frequencies_of_interest = [10, 25, 31, 47, 62, 91, 112, 173, 266, 330, 410, 509, 631, 783, 972, 1206, 1497, 1857, 2304, 2859, 3547, 4401, 5461, 6776]
+
+            # frequencies_of_interest = [
+            #     10, 25, 31, 47, 62, 91, 112, 173, 266, 330, 410, 509,
+            #     631, 783, 972, 1206, 1497, 1857, 2304, 2859, 3547, 4401,
+            #     5461, 6776, 8408, 10433
+            # ]
+
+            # Get values at particular frequency
+            indices_of_interest = [np.abs(self.fftx - frequency).argmin() for frequency in frequencies_of_interest]
+            fft_values_at_frequencies_of_interest = [self.fft[index] for index in indices_of_interest]
+
+            # Get average of frequency
+            # fft_values_at_frequencies_of_interest = self.get_average_values(self.fft, self.fftx, frequencies_of_interest)
 
 
         return self.fftx, self.fft, self.frequency_bin_centres, self.frequency_bin_energies, fft_values_at_frequencies_of_interest

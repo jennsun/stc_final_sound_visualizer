@@ -48,12 +48,12 @@ def map_frequencies(frequencies, old_min, old_max, new_min, new_max):
     ]
 
     # Convert mapped frequencies to integers that don't exceed 180
-    mapped_frequencies = [min(180, int(round(f))) for f in mapped_frequencies]
+    mapped_frequencies = [min(new_max, int(round(f))) for f in mapped_frequencies]
 
     # return the average of all the values in mapped_frequencies
-    average = sum(mapped_frequencies) / len(mapped_frequencies)
-    print("value is", average)
-    return int(average)
+    # average = sum(mapped_frequencies) / len(mapped_frequencies)
+    # print("value is", average)
+    # return int(average)
 
     # Convert the list of integers to a comma-separated string and add a newline at the end
     result_string = ','.join(map(str, mapped_frequencies)) + '\n'
@@ -62,7 +62,7 @@ def map_frequencies(frequencies, old_min, old_max, new_min, new_max):
 
 def send_command(command):
     arduino.write(f"{command}\n".encode())
-    time.sleep(2)  # Wait for Arduino to process the command
+    # time.sleep(2)  # Wait for Arduino to process the command
 
 def run_FFT_analyzer():
     args = parse_args()
@@ -85,6 +85,28 @@ def run_FFT_analyzer():
     last_update = time.time()
     print("All ready, starting audio measurements now...")
     fft_samples = 0
+    # 16 + 6
+    # values_at_frequencies_of_interest = [
+    #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    # ]
+    # 22
+    values_at_frequencies_of_interest = [
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+        0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+    # 23
+    # values_at_frequencies_of_interest = [
+    #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+    # 24
+    # values_at_frequencies_of_interest = [
+    #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0 ]
+    # values_at_frequencies_of_interest = [
+    #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #     0, 0, 0, 0, 0, 0, 0, 0, 0, 0,
+    #     0, 0, 0, 0
+    # ]
+    # [50, 1300, 1950, 3250, 3900, 4550]
     while True:
         if (time.time() - last_update) > (1./fps):
             last_update = time.time()
@@ -94,7 +116,7 @@ def run_FFT_analyzer():
             #if fft_samples % 20 == 0:
             #    print(f"Got fft_features #{fft_samples} of shape {raw_fft.shape}")
 
-            mapped_frequencies = map_frequencies(values_at_frequencies_of_interest, 0, 10, 30, 180)
+            mapped_frequencies = map_frequencies(values_at_frequencies_of_interest, 0, 10, 0, 10)
             print("Corresponding Angles are: ", mapped_frequencies)
             send_command(mapped_frequencies)
     
