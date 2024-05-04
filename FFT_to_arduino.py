@@ -117,7 +117,7 @@ def run_FFT_analyzer():
             #    print(f"Got fft_features #{fft_samples} of shape {raw_fft.shape}")
 
             mapped_frequencies = map_frequencies(values_at_frequencies_of_interest, 0, 10, 0, 10)
-            print("Corresponding Angles are: ", mapped_frequencies)
+            print("Relative Values are: ", mapped_frequencies)
             send_command(mapped_frequencies)
     
         elif args.sleep_between_frames:
