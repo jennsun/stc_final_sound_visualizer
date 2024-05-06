@@ -4,3 +4,5 @@ scipy
 pygame
 # PyAudio
 sounddevice
+pyserial
+

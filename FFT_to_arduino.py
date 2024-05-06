@@ -12,7 +12,7 @@ import serial
 import time
 import random
 
-arduino = serial.Serial('/dev/cu.usbmodem21101', 19200)
+arduino = serial.Serial('/dev/cu.usbmodem1301', 19200)
 time.sleep(0) # Wait for the connection to initialize
 
 def parse_args():
