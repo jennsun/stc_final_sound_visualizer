@@ -4,7 +4,7 @@ Demo Video: https://www.youtube.com/watch?v=8ptn5w8GsTI
 
 ### Code for system that connects Fast Fourier Transformation to Arduino Adafruit servo motor driver connecting 22 motors to spin at different rates according to their relative frequency amplitude values. This creates a realtime sound visualizer!
 
-[**Demo Video**](https://youtu.be/FnP2bkzU4oo)
+![](https://github.com/jennsun/stc_final_sound_visualizer/dancingqueen.gif)
 
 **Instructions To Run:**
 * Clone this repository
